@@ -1,20 +1,10 @@
 <script setup>
 import Pagination from '@/Components/Pagination.vue'
-import {computed, ref} from "vue";
-import { Link } from "@inertiajs/vue3";
+import {Link} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const props = defineProps({
     tickets: Array,
-})
-
-const currentPage = ref(1);
-const perPage = ref(10);
-
-const paginatedTickets = computed(() => {
-    let start = (currentPage.value - 1) * perPage.value;
-    let end = start + perPage.value;
-    return props.tickets.slice(start, end);
 })
 </script>
 
@@ -57,7 +47,7 @@ const paginatedTickets = computed(() => {
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-700">
-                    <tr v-for="ticket in paginatedTickets" :key="ticket.id">
+                    <tr v-for="ticket in tickets.data" :key="ticket.id">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.created_at }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">{{ ticket.title }}</td>
@@ -73,14 +63,12 @@ const paginatedTickets = computed(() => {
                     </tbody>
                 </table>
                 <Pagination
-                    :total-items="tickets.length"
-                    :current-page.sync="currentPage"
-                    :per-page="perPage"
-                    @update:currentPage="currentPage = $event"
+                    :links="tickets.links"
+                    :nextPageUrl="tickets.next_page_url"
+                    :prevPageUrl="tickets.prev_page_url"
                 />
             </div>
         </div>
     </AuthenticatedLayout>
 
 </template>
-

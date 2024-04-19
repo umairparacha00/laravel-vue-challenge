@@ -1,47 +1,55 @@
 <script setup>
-import { computed, defineEmits } from 'vue';
+import {Link} from '@inertiajs/vue3';
+import {computed, defineProps} from 'vue';
 
 const props = defineProps({
-    totalItems: Number,
-    currentPage: Number,
-    perPage: Number
+    links: {
+        type: Array,
+        required: true,
+    },
+    nextPageUrl: {
+        type: String,
+        required: true,
+    },
+    prevPageUrl: {
+        type: String,
+        required: true,
+    },
 });
 
-const emits = defineEmits(['update:currentPage']);
-
-const totalPages = computed(() => {
-    return Math.ceil(props.totalItems / props.perPage);
+// Filter out the previous and next links
+const filteredLinks = computed(() => {
+    return props.links.filter(link => link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;');
 });
-
-function goToPage(page) {
-    emits('update:currentPage', page);
-}
 </script>
+
 <template>
     <div class="flex justify-between items-center mt-4">
-        <button
-            :disabled="currentPage === 1"
-            @click="goToPage(currentPage - 1)"
+        <Link
+            as="button"
+            :disabled="!prevPageUrl"
+            :href="prevPageUrl"
             class="bg-gray-800 py-2 px-4 text-sm font-medium text-gray-300 hover:bg-gray-700"
         >
             Previous
-        </button>
+        </Link>
         <ul class="flex space-x-1">
             <li
-                v-for="page in totalPages"
-                :key="page"
+                v-for="link in filteredLinks"
+                :key="link"
+                :class="{ 'bg-blue-600 text-white': link.active }"
                 class="py-2 px-4 leading-tight bg-gray-800 border border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white"
-                :class="{ 'bg-blue-600 text-white': page === currentPage }"
             >
-                <a @click="goToPage(page)" class="cursor-pointer">{{ page }}</a>
+                <Link :href="link.url" class="cursor-pointer" v-html="link.label"></Link>
             </li>
         </ul>
-        <button
-            disabled="currentPage === totalPages"
-            @click="goToPage(currentPage + 1)"
+        <Link
+            as="button"
+            :disabled="!nextPageUrl"
+            :href="nextPageUrl"
             class="bg-gray-800 py-2 px-4 text-sm font-medium text-gray-300 hover:bg-gray-700"
         >
             Next
-        </button>
+        </Link>
     </div>
 </template>
