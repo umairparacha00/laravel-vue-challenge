@@ -2,10 +2,14 @@
 import Pagination from '@/Components/Pagination.vue'
 import {Link} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import useDateFormatter from '@/composables/useDateFormatter'; // Import the composable
+
 
 const props = defineProps({
     tickets: Array,
 })
+
+const { formatDate } = useDateFormatter();
 </script>
 
 <template>
@@ -49,7 +53,7 @@ const props = defineProps({
                     <tbody class="divide-y divide-gray-700">
                     <tr v-for="ticket in tickets.data" :key="ticket.id">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.created_at }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ formatDate(ticket.created_at) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">{{ ticket.title }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.user.name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ ticket.priority }}</td>
