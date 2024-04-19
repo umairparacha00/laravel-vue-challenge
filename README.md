@@ -70,3 +70,8 @@ Each of these endpoints would interact with the `Ticket` model and use the Eloqu
 For authentication, we could use a route middleware to protect these endpoints and ensure only authenticated users can access them. Laravel Passport provides a simple way to do this with its `auth:api` middleware.
 
 This is a high-level overview and the actual implementation may vary based on the specific requirements of the mobile app.
+
+
+**Suggestions:**
+
+- I can see that you have mentioned at breadcrumbs in the feature request, but I didn't find this application suitable for breadcrumbs as it has only 3 pages. So, I have not implemented breadcrumbs in this application.
