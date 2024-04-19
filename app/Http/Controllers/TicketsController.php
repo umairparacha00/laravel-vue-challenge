@@ -33,12 +33,7 @@ class TicketsController extends Controller
      */
     public function store(CreateTicketRequest $request)
     {
-        $data = $request->validated();
-
-        $data['user_id'] = auth()->id();
-
-        Ticket::create($data);
-
+        auth()->user()->tickets()->create($request->validated());
         return redirect()->route('tickets.index');
     }
 
