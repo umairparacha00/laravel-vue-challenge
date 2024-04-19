@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,5 +35,19 @@ class Ticket extends Model
     public function responses(): HasMany
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function scopeSearch(Builder $query, string $search): Builder
+    {
+        return $query->where(function (Builder $query) use ($search) {
+            $query->where('title', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhereRelation('user', function (Builder $query) use ($search) {
+                    $query->where('name', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                })
+                ->orWhere('status', 'like', "%$search%")
+                ->orWhere('priority', 'like', "%$search%");
+        });
     }
 }

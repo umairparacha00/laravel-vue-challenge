@@ -15,21 +15,17 @@ class TicketsController extends Controller
      */
     public function index()
     {
-        $tickets = Ticket::query()->with('user')
+        $tickets = Ticket::query()
+            ->when(request('search'), fn ($query, $search) => $query->search($search))
+            ->with('user')
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return inertia('Tickets/Index', [
             'tickets' => $tickets,
+            'search' => request('search'),
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return inertia('Tickets/CreateTicket');
     }
 
     /**
@@ -44,6 +40,14 @@ class TicketsController extends Controller
         Ticket::create($data);
 
         return redirect()->route('tickets.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return inertia('Tickets/CreateTicket');
     }
 
     /**

@@ -1,15 +1,26 @@
 <script setup>
 import Pagination from '@/Components/Pagination.vue'
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import useDateFormatter from '@/composables/useDateFormatter'; // Import the composable
+import useDateFormatter from '@/composables/useDateFormatter';
+import {ref, watch} from "vue";
 
 
 const props = defineProps({
     tickets: Array,
+    search: String
 })
 
 const { formatDate } = useDateFormatter();
+
+const search = ref(props.search)
+
+watch(search, (value) => {
+    router.get(route('tickets.index'),
+        { search: value },
+        { preserveState: true, preserveScroll: true, replace: true}
+    )
+})
 </script>
 
 <template>
@@ -21,6 +32,16 @@ const { formatDate } = useDateFormatter();
                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Create Ticket
                 </a>
+            </div>
+            <div class="flex justify-end">
+                <!-- add a search bar here -->
+                <div class="w-1/3">
+                    <input type="text"
+                           v-model="search"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        placeholder="Search..."
+                    />
+                </div>
             </div>
             <div class="overflow-x-auto shadow  sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-700">
